@@ -21,7 +21,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/create" element={<Create />} />
-              <Route path="/blogs/:id" element={<PostDetails />} />
+              <Route path="/posts/:id" element={<PostDetails />} />
               <Route path="*" element={<NotFound />} />
               <Route path="/update-profile" element={<Update />} />
             </Routes>

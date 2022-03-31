@@ -27,7 +27,7 @@ const Home = () => {
         <div className="home">
             {posts.map((post) => {
                 return (
-                    <Link to={`/blogs/${post.id}`} className="post">
+                    <Link to={`/posts/${post.id}`} className="post">
                         <div className="postHeader">
                             <div className="title">
                                 <h1> {post.title}</h1>

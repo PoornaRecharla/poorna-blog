@@ -67,7 +67,7 @@ const Create = () => {
                     value={tags}
                     onChange={(e) => setTags(e.target.value.split(','))}
                 />
-                <button onClick={createPost} >Add Blog</button>
+                <button onClick={createPost} >Add Post</button>
         </div>
      );
 }
