@@ -43,6 +43,7 @@ const PostDetails = () => {
 
   const getPosts = async () => {
     const posts = await getDoc(doc(db, "posts", id)).then((res) => res.data());
+    console.log("1")
     setPost(posts);
   };
 
@@ -52,6 +53,7 @@ const PostDetails = () => {
 
   return (
     <>
+    
       {post.id === id ? (
         <div className="blog-details">
           <article>
