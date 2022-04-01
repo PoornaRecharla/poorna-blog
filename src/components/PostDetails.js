@@ -6,14 +6,11 @@
 // const PostDetails = () => {
 //     const { id } = useParams();
 
-
-
 //     useEffect(async () => {
 //         const data = await getDoc(doc(db, 'posts', id)).then(res => {
 //             localStorage.setItem('post', JSON.stringify(res.data()));
 //         })
 //     }, [])
-
 
 //     const navigate = useNavigate();
 //     return (
@@ -34,48 +31,45 @@
 
 // export default PostDetails;
 
-
-
-
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, getDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../firebase-config";
 
 const PostDetails = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [posts, setPosts] = useState([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState([]);
 
-    const getPosts = async () => {
-        const posts = await getDocs(collection(db, 'posts')).then(res => res.docs.map(doc => doc.data()));
-        setPosts(posts)
-    }
+  const getPosts = async () => {
+    const posts = await getDoc(doc(db, "posts", id)).then((res) => res.data());
+    setPost(posts);
+  };
 
-    useEffect(() => {
-        getPosts()
-    }, [])
+  useEffect(() => {
+    getPosts();
+  }, []);
 
-    return (
+  return (
+    <>
+      {post.id === id ? (
         <div className="blog-details">
-            {posts.map((post) => {
-                if (post.id === id) {
-                    return (
-                        <article>
-                            <h1>Post Details</h1>
-                            <br />
-                            <h2>{post.title}</h2>
-                            <p>Written by {post.author.name}</p>
-                            <br />
-                            <p>{post.body}</p>
-                            <br />
-                            <button onClick={() => navigate(-1)}>Back</button>
-                        </article>
-                    );
-                }
-            })}
+          <article>
+            <h1>Post Details</h1>
+            <br />
+            <h2>{post.title}</h2>
+            <p>Written by {post.author.name}</p>
+            <br />
+            <p>{post.body}</p>
+            <br />
+            <button onClick={() => navigate(-1)}>Back</button>
+          </article>
         </div>
-    );
-}
+      ) : (
+        <>Loading</>
+      )}
+    </>
+  );
+};
 
 export default PostDetails;
