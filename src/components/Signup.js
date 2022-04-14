@@ -12,17 +12,8 @@ function Signup() {
     const [signupName, setSignupName] = useState("");
 
     return (
-        <div className="modalBackground">
+        <div className="signup">
             <div className="modalContainer">
-                <div className="titleCloseBtn">
-                    <button
-                        onClick={() => {
-                            navigate(-1);
-                        }}
-                    >
-                        X
-                    </button>
-                </div>
                 <div className="title">
                     <h1>Sign up</h1>
                 </div>
@@ -39,7 +30,9 @@ function Signup() {
                         type="email"
                         placeholder="Email..."
                         value={signupEmail}
-                        onChange={(e) => setSignupEmail(e.target.value)}
+                        onChange={(e) => {
+                            setSignupEmail(e.target.value)
+                        }}
                     />
                     <input
                         type="password"
@@ -54,7 +47,7 @@ function Signup() {
                         Sign up with Google
                     </button>
                 </div>
-                <div className="footer">
+                <div className="footer1">
                     <button
                         onClick={() => {
                             navigate(-1);

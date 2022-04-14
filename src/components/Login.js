@@ -3,7 +3,7 @@ import "./popup/popup.css";
 import { login, signInWithGoogle } from "../firebase-config"
 import { useNavigate } from "react-router-dom";
 
-function Login() { //{ setLogin }
+function Login() {
 
     const navigate = useNavigate();
 
@@ -11,17 +11,8 @@ function Login() { //{ setLogin }
     const [loginPassword, setLoginPassword] = useState("");
 
     return (
-        <div className="modalBackground">
+        <div className="login">
             <div className="modalContainer">
-                <div className="titleCloseBtn">
-                    <button
-                        onClick={() => {
-                            navigate(-1);
-                        }}
-                    >
-                        X
-                    </button>
-                </div>
                 <div className="title">
                     <h1>Login</h1>
                 </div>
@@ -45,7 +36,7 @@ function Login() { //{ setLogin }
                         Sign in with Google
                     </button>
                 </div>
-                <div className="footer">
+                <div className="footer1">
                     <button
                         onClick={() => {
                             navigate(-1);
@@ -60,8 +51,6 @@ function Login() { //{ setLogin }
                                 login(loginEmail, loginPassword);
                                 navigate(-1);
                             }
-                            // login(loginEmail, loginPassword);
-                            // navigate(-1);
                         }}
                         id="loginBtn"
                     >

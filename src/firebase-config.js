@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 // import { get, getDatabase, ref, set } from "firebase/database";
 import { setDoc, doc, getFirestore } from "@firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC-fciBcOa-vhyNtJJzNvzjG_Y00eQo2uQ",
@@ -22,6 +23,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+export const storage = getStorage(app);
 
 export const db = getFirestore(app);
 
@@ -42,6 +45,7 @@ export const signInWithGoogle = () => {
                 name: name,
                 email: email,
                 uid: uid,
+                photoURL: result.user.photoURL
             })
         })
         .catch((error) => {
@@ -50,11 +54,10 @@ export const signInWithGoogle = () => {
 };
 
 
-export const signup = async (name, email, password) => {
+export const signup = async (email, password, name) => {
     try {
         const user = await createUserWithEmailAndPassword(auth, email, password);
         console.log("Register Successful");
-        // console.log(user)
         updateProfile(auth.currentUser, {
             displayName: name
         })
@@ -63,9 +66,11 @@ export const signup = async (name, email, password) => {
             name: name,
             email: email,
             uid: uid,
+            photoURL: 'https://firebasestorage.googleapis.com/v0/b/poorna-blog.appspot.com/o/Profile%20Photos%2Fdefault.png?alt=media&token=6f135c72-d24e-4e07-8f5e-ffe186625171'
         })
     } catch (error) {
         console.error(error.message);
+        alert(error.message);
     }
 };
 
@@ -83,4 +88,6 @@ export const login = async (email, password) => {
 export const logout = async () => {
     await signOut(auth);
     console.log("Logout Successful");
+    // alert('logout successful')
+    window.location.href = "/";
 };

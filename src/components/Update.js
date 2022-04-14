@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
-import { auth } from '../firebase-config'
+import { auth, storage, db } from '../firebase-config'
 import { updateProfile, updateEmail, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
+import { getDoc, getDocs, setDocs, setDoc, doc, updateDoc } from 'firebase/firestore'
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    listAll,
+    list,
+} from "firebase/storage";
 
 function Update() {
 
@@ -9,8 +17,10 @@ function Update() {
 
     const [user, setUser] = useState('')
     const [name, setName] = useState('')
-    const [email, setEmail] = React.useState('')
-    const [error, setError] = React.useState('')
+    const [email, setEmail] = useState('')
+    const [image, setImage] = useState('')
+    const [imageURL, setImageURL] = useState('')
+    const [error, setError] = useState('')
 
     onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
@@ -23,21 +33,27 @@ function Update() {
     const changeName = () => {
         updateProfile(auth.currentUser, {
             displayName: name
-        }).then(() => {
+        }).then(async () => {
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                name: name
+            })
             setError('')
             alert('Name changed successfully')
-            navigate('/profile')
+            navigate(`/profile/${user.uid}`)
         }).catch(error => {
             setError(error.message)
             console.log(error.message)
         })
     }
 
-    const changeEmail = () => {
-        updateEmail(auth.currentUser, email).then(() => {
+    const changeEmail = async () => {
+        updateEmail(auth.currentUser, email).then(async () => {
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                email: email
+            })
             setError('')
             alert('Email changed successfully')
-            navigate('/profile')
+            navigate(`/profile/${user.uid}`)
         }).catch(error => {
             setError(error.message)
         })
@@ -51,6 +67,50 @@ function Update() {
             setError(error.message)
         })
     }
+
+    const changeImage = async () => {
+        // const file = image
+        // const storageRef = ref(storage, 'images/yay.jpg')
+        const imageRef = ref(storage, `Profile Photos/${image.name}`);
+        console.log(image)
+        uploadBytes(imageRef, image).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((url) => {
+                setImageURL(url)
+                updateProfile(auth.currentUser, {
+                    photoURL: url
+                }).then(async () => {
+                    await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                        photoURL: url
+                    })
+                    setError('')
+                    alert('Image changed successfully')
+                    navigate(`/profile/${user.uid}`)
+                }).catch(error => {
+                    setError(error.message)
+                })
+            })
+        })
+    }
+    
+    
+    //     uploadBytes(storageRef, file).then((snapshot) => {
+    //         getDownloadURL(snapshot).then((url) => {
+    //             setImageURL(url)
+    //             updateProfile(auth.currentUser, {
+    //                 photoURL: url
+    //             }).then(() => {
+    //                 setError('')
+    //                 alert('Image changed successfully')
+    //                 navigate('/profile')
+    //             }).catch(error => {
+    //                 setError(error.message)
+    //             })
+    //         })
+    //     })
+    // }
+
+
+
 
     return (
         <div>
@@ -68,7 +128,12 @@ function Update() {
             <div>
                 <button onClick={changePassword}>Update Password</button>
             </div>
-            <div>                
+            <div>
+                <label>Image:</label>
+                <input type="file" onChange={e => setImage(e.target.files[0])} />
+                <button onClick={changeImage}>Update Image</button>
+            </div>
+            <div>
                 {error ? <label>Error:</label> : null}
             </div>
         </div>

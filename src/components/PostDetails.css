@@ -1,0 +1,5 @@
+.blog-details {
+    text-align: justify;
+    padding: min(1rem, 1vw);
+    border: 1px solid rgba(228, 223, 223, 0.25);
+}

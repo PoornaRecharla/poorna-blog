@@ -19,7 +19,8 @@ code {
   box-sizing: border-box;
   margin: 0;
   font-family: "Quicksand";
-  color: #333;
+  color: #eee;
+  background-color: #333;
 }
 .navbar {
   padding: 20px;
@@ -45,8 +46,9 @@ code {
   color: #f1356d;
 }
 .content {
-  max-width: 600px;
-  margin: 40px auto;
+  max-width: 1000px;
+  min-height: calc(100vh - 260px);
+  margin: 0px auto;
   padding: 20px;
 }
 
@@ -88,7 +90,7 @@ code {
 
 /* create new blog form */
 .create {
-  max-width: 400px;
+  /* max-width: 400px; */
   margin: 0 auto;
   text-align: center;
 }
@@ -104,6 +106,7 @@ code {
 .create input,
 .create textarea,
 .create select {
+  max-height: 100%;
   width: 100%;
   padding: 6px 10px;
   margin: 10px 0;
@@ -118,4 +121,14 @@ code {
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.pagination * {
+  display: inline;
+}
+
+.profilePic {
+  max-width: 100%;
+  /* height: 96px;
+  width: 96px; */
 }
