@@ -143,3 +143,8 @@ body {
 button {
   cursor: pointer;
 }
+
+.heading * {
+  font-size: 3rem;
+  background-color: #333;
+}

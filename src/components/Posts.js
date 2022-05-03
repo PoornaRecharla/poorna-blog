@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "../firebase-config";
 import Post from "./Post";
 
-const Home = () => {
+const Posts = () => {
 
     const [page, setPage] = useState(1);
     const [posts, setPosts] = useState([]);
@@ -35,12 +35,8 @@ const Home = () => {
     }, [])
 
     return (
-        <>                
+        <>
             <div className="posts">
-                <div className="heading">
-                    <h1>All Posts</h1>
-                </div>
-                <br />
                 {
                     posts.length > 0 ?
                         posts.map(post => {
@@ -111,4 +107,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Posts;
