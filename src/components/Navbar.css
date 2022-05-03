@@ -2,7 +2,7 @@
 .logo-nav {
   display: flex;
   align-items: center;
-  font-weight: 600;
+  /* font-weight: 550; */
   justify-content: space-between;
   max-width: 1024px;
   margin: 10px auto;
@@ -18,7 +18,7 @@
   background-color: #1f1f1f;
   justify-content: space-between;
   box-shadow: 0 1px 4px rgba(146, 161, 176, .15);
-  height: 60px;
+  height: 50px;
 }
 
 .header * {
@@ -45,10 +45,10 @@
   margin-right: 20px;
 }
 
-.nav-options a:hover {
+.left-logo:hover, .nav-options, a:hover {
   color: #e04f62;
-  font-size: 1.5rem;
-  transition: all 0.5s ease;
+  /* font-size: 1.5rem; */
+  /* transition: all 0.5s ease; */
 }
 
 .mobile-option {
@@ -91,11 +91,13 @@
   .left-logo {
     position: absolute;
     left: 10px;
+    font-size: 2rem;
+    /* top: 10px; */
   }
 
   .nav-options {
     display: flex;
-    width: 50%;
+    width: 100%;
     height: 100%;
     position: fixed;
     padding: 32px;
@@ -107,11 +109,11 @@
     list-style-type: none;
     grid-gap: 0px;
     font-weight: 900;
-    border-radius: 30px 0px;
+    /* border-radius: 30px 0px; */
   }
 
   .nav-options.active {
-    background: #0E2431;
+    /* background: #0E2431; */
     right: 0;
     opacity: 1;
     transition: all 0.5s ease;
@@ -121,10 +123,12 @@
   }
 
   .nav-options a {
+    /* border: 1px solid #eee; */
+    margin: 0 5vw;
     display: flex;
     align-items: center;
     /* justify-content: center; */
-    width: 50vw;
+    width: 90vw;
     padding: 10px 10px;
     color: #fff !important;
   }

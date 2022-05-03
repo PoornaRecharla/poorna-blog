@@ -11,6 +11,8 @@ function Footer() {
     return (
         <div className='footer'>
             <p className="footer-title">Poorna Chandra Recharla</p>
+            <div className="tags">
+            </div>
             <div className="footer-social">
                 <a href="https://www.linkedin.com/in/poornarecharla/" target={"_blank"} className="footer-icon"><LinkedInIcon/></a>
                 {/* <a href="#home" className="footer-icon"><TelegramIcon/></a> */}

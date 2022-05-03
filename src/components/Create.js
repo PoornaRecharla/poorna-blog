@@ -1,93 +1,163 @@
 import React, { useEffect, useState } from "react";
-import { doc, addDoc, collection, serverTimestamp, setDoc, getDocs } from "firebase/firestore";
-import { db, auth } from "../firebase-config";
-import { onAuthStateChanged } from "firebase/auth";
+import { doc, addDoc, collection, serverTimestamp, setDoc, getDocs, updateDoc, arrayUnion, increment, getDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
 import { useNavigate } from 'react-router-dom';
-import { Phone } from "@material-ui/icons";
+import MediumEditor from "medium-editor";
+import './../../node_modules/medium-editor/dist/css/medium-editor.min.css'
+import './../../node_modules/medium-editor/dist/css/themes/default.min.css'
+import './Create.css'
 
-const Create = () => {
+function Create() {
 
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
-    const [tags, setTags] = useState([]);
-    const navigate = useNavigate();
-    const [user, setUser] = useState('');
+  const [title, setTitle] = useState('');
+  const [tag, setTag] = useState('');
+  const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
+  const [published, setPublished] = useState(true);
+  const [postHtml, setPostHtml] = useState('');
 
-    const postsCollectionRef = collection(db, "posts");
+  useEffect(() => {
+    const editor = new MediumEditor(".medium-editable", {
+      autoLink: true,
+      delay: 1000,
+      targetBlank: true,
+      toolbar: {
+        buttons: [
+          'bold',
+          'italic',
+          'quote',
+          'underline',
+          'anchor',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'strikethrough',
+          'subscript',
+          'superscript',
+          'pre',
+          'image',
+          'html',
+          'justifyCenter'
+        ],
+        diffLeft: 25,
+        diffTop: 10,
+      },
+      anchor: {
+        placeholderText: 'Type a link',
+        customClassOption: 'btn',
+        customClassOptionText: 'Create Button'
+      },
+      paste: {
+        cleanPastedHTML: true,
+        cleanAttrs: ['style', 'dir'],
+        cleanTags: ['label', 'meta'],
+        unwrapTags: ['sub', 'sup']
+      },
+      anchorPreview: {
+        hideDelay: 300
+      },
+      placeholder: {
+        text: 'Tell your story...'
+      }
+    })
+    editor.subscribe('editableInput', () => {
+      if (typeof document !== 'undefined') {
+        setPostHtml(editor.getContent(0))
+      }
+    })
+  }, [])
 
-    const createPost = async (e) => {
-        e.preventDefault();
-        if (!title || !body) {
-            if (!title && !body) {
-                alert('Please enter title and body');
-            }
-            else if (!body) {
-                alert('Please enter body');
-            } else
-                alert('Please enter title');
-            return;
-        }
-        const post = await addDoc(postsCollectionRef, {})
-        await setDoc(doc(db, "posts", post.id), {
-            id: post.id,
-            title,
-            body,
-            author: { name: auth.currentUser.displayName, id: auth.currentUser.uid, photoURL: auth.currentUser.photoURL },
-            timestamp: serverTimestamp(),
-            deleted: false,
-            tags
-        })
+  const postsCollectionRef = collection(db, "posts");
 
-        await setDoc(doc(db, "postsList", post.id), {
-            id: post.id,
-            title,
-            body: body.length > 100 ? body.substring(0, 100) + '...' : body.length,
-            author: {
-                name: auth.currentUser.displayName,
-                id: auth.currentUser.uid,
-                photoURL: auth.currentUser.photoURL ? auth.currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/react-blog-c7f0f.appspot.com/o/default-user-image.png?alt=media&token=f9f8f8e0-f8f8-4f8f-8f8f-f8f8f8f8f8f8'
-            },
-            timestamp: serverTimestamp(),
-            deleted: false,
-            tags
-        })
-        console.log(post);
-        navigate("/");
-    };
+  const createPost = async () => {
 
-    onAuthStateChanged(auth, (currentUser) => {
-        if (!currentUser) {
-            alert("Please login to create a post");
-            navigate('/')
-        } else {
-            getDocs(doc(db, "users", currentUser.uid), (user) => {
-                setUser(user);
-            })
-            console.log(user);
-        }
+    const post = await addDoc(postsCollectionRef, {})
+
+    const metaDataRef = collection(db, "metaData");
+    const metaData = await getDocs(metaDataRef);
+    const postNum = metaData.docs.map(doc => doc.data())[0].allPosts + 1;
+    const lastVisiblePost = metaData.docs.map(doc => doc.data())[0].lastVisiblePost;
+
+    await setDoc(doc(db, "posts", post.id), {
+      id: post.id,
+      title,
+      body: postHtml,
+      timestamp: serverTimestamp(),
+      published,
+      tags,
+      postNum
     })
 
+    tags.forEach(async tag => {
+      await updateDoc(doc(db, "tags", "tags"), {
+        [tag]: arrayUnion(post.id)
+      })
+    })
 
-    return (
-        <div className="create">
-            <h2>Add a New Post</h2>
-            <form onSubmit={createPost}>
-                <div className="form-group">
-                    <label htmlFor="title">Title</label>
-                    <input required type="text" className="form-control" id="title" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="body">Body</label>
-                    <textarea className="form-control" id="body" rows="3" placeholder="Enter body" value={body} onChange={(e) => {setBody(e.target.value); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px';}}></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="tags">Tags</label>
-                    <input type="text" className="form-control" id="tags" placeholder="Enter tags" value={tags} onChange={(e) => setTags(e.target.value.split(','))} />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
+    await updateDoc(doc(db, "metaData", "metaData"), {
+      posts: arrayUnion(post.id),
+      allPosts: increment(1),
+      publishedPosts: increment(published ? 1 : 0),
+      lastVisiblePost: published ? postNum : lastVisiblePost
+    })
+
+    console.log(post.id);
+    // navigate('/')
+  }
+
+  return (
+    <>
+      {
+        // console.log(published)
+      }
+      <h2>Add a New Post</h2>
+      <div className="form-group">
+        <input type="text" className="form-control" name="title" id="title" placeholder="Please enter the Title" onChange={(e) => setTitle(e.target.value)} />
+      </div>
+      <div className="form-group">
+        <input type="text" className="form-control" name="tag" id="tag" placeholder="Tags" onChange={(e) => setTag(e.target.value)}
+          onKeyUpCapture={(e) => {
+            if (e.key === 'Enter') {
+              if (! tags.includes(tag))
+                setTags([...tags, tag])
+              e.target.value = ''
+            }
+          }} />
+        <div>
+          {
+            tags.map((tag, index) => {
+              return (
+                <button type="button" className="tags" onClick={() => setTags(tags.filter((t, i) => i !== index))} key={index} >
+                  {tag} &times;
+                </button>
+              )
+            })
+          }
         </div>
-    );
+      </div>
+      <br />
+      <form className="editor-form main-editor" autoComplete="off" >
+        <div className="form-group">
+          <textarea id="medium-editable" className="medium-editable" ></textarea>
+        </div>
+      </form>
+      <hr />
+      <br />
+      {/* <input type="text" name="post-html" id="post-html" value={postHtml} onChange={(e) => setPostHtml(e.target.value)} /> */}
+      <textarea name="post-html" id="post-html" cols="30" rows="10" value={postHtml} onChange={(e) => setPostHtml(e.target.value)}></textarea>
+      <br />
+      <br />
+      <div className="form-group">
+        <label htmlFor="published">Publish</label>
+        <input type="checkbox" name="published" id="published" checked={published} onChange={(e) => setPublished(e.target.checked)} />
+      </div>
+      <br />
+      <button type="button" className="btn btn-primary" onClick={createPost}>Create</button>
+    </>
+  )
 }
 
-export default Create;
+export default Create
