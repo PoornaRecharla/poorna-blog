@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import './Post.css'
 
 export default function Post(post) {
-    const { id, title, body, timestamp } = post.post;
+    const { id, title, body, timestamp, postNum } = post.post;
 
     const dateConverter = (timestamp) => {
         return new Date(timestamp.seconds * 1000).toLocaleDateString("en-US", {
@@ -13,20 +13,18 @@ export default function Post(post) {
         })
     }
 
-    document.title = title;
-    // document.getElementsByClassName('post-body')[0].innerHTML = body;   
 
     return (
         <div className='post'>
-            <Link to={`/post/${id}`}>
+            <Link to={`/post/${postNum}`}>
                 <div className='post-title'>
                     {title}
                 </div>
                 <div className='post-date'>
-                    <p>{ dateConverter(timestamp) }</p>
+                    <p>{dateConverter(timestamp)}</p>
                 </div>
-                <div className='post-body'>
-                    {body}
+                <div className='post-body' dangerouslySetInnerHTML={{ __html: body }} >
+
                 </div>
             </Link>
         </div>

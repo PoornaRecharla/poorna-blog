@@ -28,7 +28,7 @@
 }
 
 .post-body {
-    /* max-height: 8ch; */
+    max-height: 12ch;
     /* white-space: nowrap; */
     font-size: 1.2rem;
     text-align: justify;

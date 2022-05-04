@@ -79,7 +79,6 @@ function Create() {
     const metaDataRef = collection(db, "metaData");
     const metaData = await getDocs(metaDataRef);
     const postNum = metaData.docs.map(doc => doc.data())[0].allPosts + 1;
-    const lastVisiblePost = metaData.docs.map(doc => doc.data())[0].lastVisiblePost;
 
     await setDoc(doc(db, "posts", post.id), {
       id: post.id,
@@ -97,12 +96,18 @@ function Create() {
       })
     })
 
-    await updateDoc(doc(db, "metaData", "metaData"), {
-      posts: arrayUnion(post.id),
-      allPosts: increment(1),
-      publishedPosts: increment(published ? 1 : 0),
-      lastVisiblePost: published ? postNum : lastVisiblePost
-    })
+    published ?
+      await updateDoc(doc(db, "metaData", "metaData"), {
+        publishedPosts: arrayUnion(post.id),
+        allPosts: increment(1),
+        posts: arrayUnion(post.id)
+      })
+      :
+      await updateDoc(doc(db, "metaData", "metaData"), {
+        unpublishedPosts: arrayUnion(post.id),
+        allPosts: increment(1),
+        posts: arrayUnion(post.id)
+      })
 
     console.log(post.id);
     // navigate('/')

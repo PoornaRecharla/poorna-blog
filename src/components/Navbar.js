@@ -28,7 +28,7 @@ const Navbar = () => {
                 <div className="left-logo">
                     <Link to="/" className='left-logo' onClick={() => { closeMenu() }}>Poorna's Thoughts</Link>
                 </div>
-                <div className='right-navigations'>
+                {/* <div className='right-navigations'>
                     <div className={menutoggle ? "nav-options active" : "nav-options"}>
                         <Link to='/create' onClick={() => { closeMenu() }}>Create Post</Link>
                         <Link to={'/about'} onClick={() => { closeMenu() }}>About</Link>
@@ -44,7 +44,7 @@ const Navbar = () => {
                             <MenuIcon className="menu-icon" style={{ fontSize: 40 }} />
                         )}
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
