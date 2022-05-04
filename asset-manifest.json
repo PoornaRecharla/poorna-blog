@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.7b0043e8.css",
-    "main.js": "/static/js/main.cc231876.js",
-    "index.html": "/index.html",
-    "main.7b0043e8.css.map": "/static/css/main.7b0043e8.css.map",
-    "main.cc231876.js.map": "/static/js/main.cc231876.js.map"
+    "main.css": "/poorna-blog/static/css/main.7b0043e8.css",
+    "main.js": "/poorna-blog/static/js/main.cc231876.js",
+    "index.html": "/poorna-blog/index.html",
+    "main.7b0043e8.css.map": "/poorna-blog/static/css/main.7b0043e8.css.map",
+    "main.cc231876.js.map": "/poorna-blog/static/js/main.cc231876.js.map"
   },
   "entrypoints": [
     "static/css/main.7b0043e8.css",
