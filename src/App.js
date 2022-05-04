@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import Posts from './components/Posts';
 import EditPost from './components/EditPost';
 import Tag from './components/Tag';
+import Delete from './components/Delete';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <Route path="/posts/" element={<Posts />} />
               <Route path="/post/edit/:postNum" element={<EditPost />} />
               <Route path="/tag/:tag" element={<Tag />} />
+              <Route path="/delete/:postNum" element={<Delete />} />
               <Route path="*" element={<NotFound />} />
               <Route path="/dummy" element={<Dummy />} />
             </Routes>

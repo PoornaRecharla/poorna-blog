@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { doc, addDoc, collection, serverTimestamp, setDoc, getDocs, updateDoc, arrayUnion, increment, getDoc } from "firebase/firestore";
+import { doc, addDoc, collection, serverTimestamp, setDoc, getDocs, updateDoc, arrayUnion, increment } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useNavigate } from 'react-router-dom';
 import MediumEditor from "medium-editor";
@@ -68,57 +68,68 @@ function Create() {
         setPostHtml(editor.getContent(0))
       }
     })
+    document.getElementById('title').focus();
   }, [])
 
   const postsCollectionRef = collection(db, "posts");
 
   const createPost = async () => {
 
-    const post = await addDoc(postsCollectionRef, {})
+    if (title === '' || postHtml === '') {
+      alert('Please fill in all fields')
+    } else {
 
-    const metaDataRef = collection(db, "metaData");
-    const metaData = await getDocs(metaDataRef);
-    const postNum = metaData.docs.map(doc => doc.data())[0].allPosts + 1;
 
-    await setDoc(doc(db, "posts", post.id), {
-      id: post.id,
-      title,
-      body: postHtml,
-      timestamp: serverTimestamp(),
-      published,
-      tags,
-      postNum
-    })
+      const post = await addDoc(postsCollectionRef, {})
 
-    tags.forEach(async tag => {
-      await updateDoc(doc(db, "tags", "tags"), {
-        [tag]: arrayUnion(post.id)
-      })
-    })
+      const metaDataRef = collection(db, "metaData");
+      const metaData = await getDocs(metaDataRef);
+      const postNum = metaData.docs.map(doc => doc.data())[0].allPosts + 1;
 
-    published ?
-      await updateDoc(doc(db, "metaData", "metaData"), {
-        publishedPosts: arrayUnion(post.id),
-        allPosts: increment(1),
-        posts: arrayUnion(post.id)
-      })
-      :
-      await updateDoc(doc(db, "metaData", "metaData"), {
-        unpublishedPosts: arrayUnion(post.id),
-        allPosts: increment(1),
-        posts: arrayUnion(post.id)
+      await setDoc(doc(db, "posts", post.id), {
+        id: post.id,
+        title,
+        body: postHtml,
+        timestamp: serverTimestamp(),
+        published,
+        tags,
+        postNum
       })
 
-    console.log(post.id);
-    // navigate('/')
+      tags.forEach(async tag => {
+        await updateDoc(doc(db, "tags", "tags"), {
+          [tag]: arrayUnion(post.id)
+        })
+      })
+
+      published ?
+        await updateDoc(doc(db, "metaData", "metaData"), {
+          publishedPosts: arrayUnion(post.id),
+          allPosts: increment(1),
+          posts: arrayUnion(post.id)
+        })
+        :
+        await updateDoc(doc(db, "metaData", "metaData"), {
+          unpublishedPosts: arrayUnion(post.id),
+          allPosts: increment(1),
+          posts: arrayUnion(post.id)
+        })
+
+      console.log(post.id);
+      setTitle('');
+      setTag('');
+      setTags([]);
+      setPublished(true);
+      setPostHtml('');
+      document.getElementById('title').innerHTML = '';
+      document.getElementById('medium-editable').innerHTML = '';
+      document.getElementById('title').focus();
+    }
   }
 
   return (
     <>
-      {
-        // console.log(published)
-      }
-      <h2>Add a New Post</h2>
+      {/* <h2>Add a New Post</h2> */}
       <div className="form-group">
         <input type="text" className="form-control" name="title" id="title" placeholder="Please enter the Title" onChange={(e) => setTitle(e.target.value)} />
       </div>
@@ -126,7 +137,7 @@ function Create() {
         <input type="text" className="form-control" name="tag" id="tag" placeholder="Tags" onChange={(e) => setTag(e.target.value)}
           onKeyUpCapture={(e) => {
             if (e.key === 'Enter') {
-              if (! tags.includes(tag))
+              if (!tags.includes(tag))
                 setTags([...tags, tag])
               e.target.value = ''
             }
@@ -160,6 +171,15 @@ function Create() {
         <input type="checkbox" name="published" id="published" checked={published} onChange={(e) => setPublished(e.target.checked)} />
       </div>
       <br />
+      <div className="preview-container">
+        <div className="preview-title">
+          <h2>{title}</h2>
+        </div>
+        <div className="preview-body">
+          <div dangerouslySetInnerHTML={{ __html: postHtml }} />
+        </div>
+      </div>
+
       <button type="button" className="btn btn-primary" onClick={createPost}>Create</button>
     </>
   )
