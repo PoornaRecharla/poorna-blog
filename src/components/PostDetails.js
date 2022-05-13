@@ -24,8 +24,11 @@ const PostDetails = () => {
 
 
   useEffect(async () => {
+    console.log("post");
     await getDocs(query(collection(db, "posts"), where("postNum", "==", postNum))).then((res) => setPost(res.docs[0].data()));
+    console.log("post2");
     await getDocs(query(collection(db, "comments"), where("postNum", "==", postNum), orderBy("commentNum", "asc"))).then((res) => setComments(res.docs.map(doc => doc.data())));
+    console.log("post3");
     await getDocs(query(collection(db, "comments"), where("postNum", "==", postNum))).then((res) => setCommentNum(res.docs.length));
   }, []);
 

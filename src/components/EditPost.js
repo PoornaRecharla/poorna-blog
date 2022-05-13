@@ -1,23 +1,12 @@
-// import React from 'react'
-
-// function EditPost() {
-//   return (
-//     <div>EditPost</div>
-//   )
-// }
-
-// export default EditPost
-
-
 import React from 'react'
 import { useEffect, useState } from 'react'
-import { getDocs, collection, query, orderBy, limit, where, startAt, updateDoc, setDoc, doc, arrayUnion, increment } from 'firebase/firestore'
+import { getDocs, collection, query, where, updateDoc, doc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { db } from '../firebase-config'
 import { useParams } from 'react-router-dom'
 
 function EditPost() {
   const postNum = parseInt(useParams().postNum)
-  const [post, setPost] = useState({})
+  // const [post, setPost] = useState({})
   const [id, setId] = useState('')
   const [title, setTitle] = useState('')
   const [published, setPublished] = useState(false)
@@ -28,7 +17,7 @@ function EditPost() {
 
   useEffect(() => {
     getDocs(query(collection(db, 'posts'), where('postNum', '==', postNum))).then(res => {
-      setPost(res.docs[0].data())
+      // setPost(res.docs[0].data())
       setId(res.docs[0].id)
       setTitle(res.docs[0].data().title)
       setPublished(res.docs[0].data().published)
@@ -57,14 +46,12 @@ function EditPost() {
     if (published) {
       await updateDoc(doc(db, 'metaData', 'metaData'), {
         publishedPosts: arrayUnion(post.id),
-        allPosts: increment(1),
-        posts: arrayUnion(post.id)
+        unpublishedPosts: arrayRemove(post.id)
       })
     } else {
       await updateDoc(doc(db, 'metaData', 'metaData'), {
         unpublishedPosts: arrayUnion(post.id),
-        allPosts: increment(1),
-        posts: arrayUnion(post.id)
+        publishedPosts: arrayRemove(post.id)
       })
     }
     console.log('post updated')

@@ -31,3 +31,6 @@ yarn-error.log*
 # git
 .gitignore
 .github/
+
+.env
+.firebase/hosting.YnVpbGQ.cache

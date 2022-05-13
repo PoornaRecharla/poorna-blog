@@ -1,11 +1,11 @@
-import { addDoc, arrayRemove, collection, deleteDoc, doc, getDocs, increment, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { arrayRemove, collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { db } from '../firebase-config';
 
 function Delete() {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const postNum = parseInt(useParams().postNum);
   const [post, setPost] = useState(null);
 
@@ -17,15 +17,17 @@ function Delete() {
     await setDoc(doc(db, "deletedPosts", post.id), post)
     await deleteDoc(doc(db, "posts", post.id));
     await updateDoc(doc(db, "metaData", "metaData"), {
-      allPosts: increment(-1),
+      // allPosts: increment(-1),
       posts: arrayRemove(post.id),
-      publishedPosts: arrayRemove(post.id)
+      publishedPosts: arrayRemove(post.id),
+      unpublishedPosts: arrayRemove(post.id)
     })
     post.tags.forEach(async tag => {
       await updateDoc(doc(db, "tags", "tags"), {
         [tag]: arrayRemove(post.id)
       })
     })
+    console.log("post deleted");
     console.log(post.id);
     window.location.href = '/';
   }
