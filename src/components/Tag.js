@@ -21,6 +21,7 @@ function Tag() {
         query(
           collection(db, "posts"),
           where("published", "==", true),
+          where("tags", "array-contains", tag),
           orderBy("postNum", "desc"),
           limit(postsPerPage),
           startAt(start)

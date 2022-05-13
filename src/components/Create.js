@@ -121,7 +121,7 @@ function Create() {
       setTags([]);
       setPublished(true);
       setPostHtml('');
-      document.getElementById('title').innerHTML = '';
+      document.getElementById('title').value = '';
       document.getElementById('medium-editable').innerHTML = '';
       document.getElementById('title').focus();
     }

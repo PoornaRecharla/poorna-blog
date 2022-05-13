@@ -1,6 +1,6 @@
 .blog-details {
     text-align: justify;
-    padding: min(1rem, 1vw);
+    padding: min(1rem, 2vw);
     border: 1px solid rgba(228, 223, 223, 0.25);
 }
 
@@ -20,6 +20,7 @@
     font-size: 0.875rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .date {
@@ -47,4 +48,47 @@
     color: #fff;
     padding: 2px 5px;
     cursor: pointer;
+}
+
+#comment-user {
+    height: 2rem;
+    width: calc(50% - 10px);
+    margin: 10px 10px 10px 0;
+    border: 1px solid #dee2e6;
+}
+
+#comment-email {
+    height: 2rem;
+    width: calc(50% - 10px);
+    margin: 10px 0 10px 10px;
+    border: 1px solid #dee2e6;
+}
+
+#comment {
+    font-size: 0.875rem;
+    width: 100%;
+    border: 1px solid #dee2e6;
+    margin-bottom: 0.5rem;
+}
+
+.comment-list {
+    margin-bottom: 1rem 0;
+}
+
+.comment-list .comment-item {
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    border: 1px solid #000;
+    margin-bottom: 0.5rem;
+}
+
+.comment-item .comment-item-user {
+    font-size: 0.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.comment-item .comment-item-body {
+    font-size: 0.875rem;
+    /* margin-bottom: 0.5rem; */
 }

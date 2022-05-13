@@ -1,4 +1,4 @@
-import { getDocs, query, where, doc, collection } from "firebase/firestore";
+import { getDocs, query, where, doc, collection, setDoc, addDoc, updateDoc, serverTimestamp, orderBy } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../firebase-config";
@@ -15,9 +15,18 @@ const PostDetails = () => {
   const [post, setPost] = useState([]);
   // const [date, setDate] = useState("");
   const [alert, setAlert] = useState(false);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [commentUser, setCommentUser] = useState("");
+  const [commentEmail, setCommentEmail] = useState("");
+
+  const [commentNum, setCommentNum] = useState(0);
+
 
   useEffect(async () => {
     await getDocs(query(collection(db, "posts"), where("postNum", "==", postNum))).then((res) => setPost(res.docs[0].data()));
+    await getDocs(query(collection(db, "comments"), where("postNum", "==", postNum), orderBy("commentNum", "asc"))).then((res) => setComments(res.docs.map(doc => doc.data())));
+    await getDocs(query(collection(db, "comments"), where("postNum", "==", postNum))).then((res) => setCommentNum(res.docs.length));
   }, []);
 
   const dateConverter = (timestamp) => {
@@ -33,7 +42,21 @@ const PostDetails = () => {
     setAlert(true);
     setTimeout(() => {
       setAlert(false);
-    }, 1500);
+    }, 2500);
+  }
+
+  const handleComment = async () => {
+    if (comment !== "") {
+      await addDoc(collection(db, "comments"), {
+        postNum,
+        comment,
+        name: commentUser,
+        email: commentEmail,
+        commentNum: commentNum + 1,
+      });
+      await getDocs(query(collection(db, "comments"), where("postNum", "==", postNum), orderBy("commentNum", "asc"))).then((res) => setComments(res.docs.map(doc => doc.data())));
+      setComment("");
+    }
   }
 
   return (
@@ -69,6 +92,55 @@ const PostDetails = () => {
               ))}
             </div>
             <div id='body' className="body" dangerouslySetInnerHTML={{ __html: post.body }} />
+            <br />
+            <div className="comments">
+              <h3>Comments</h3>
+              <br />
+              <div className="comment-list">
+                {
+                  comments.length > 0 ?
+                    comments.map((comment) => (
+                      <div className="comment-item" key={comment.commentNum}>
+                        <div className="comment-item-user">
+                          <p>{comment.name}</p>
+                        </div>
+                        <div className="comment-item-body">
+                          <p>{comment.comment}</p>
+                        </div>
+                      </div>
+                    ))
+                    :
+                    <>
+                      <p>No comments yet!</p>
+                    </>
+                }
+              </div>
+              <div className="comment-form">
+                <input
+                  id="comment-user"
+                  placeholder="Enter your name"
+                  value={commentUser}
+                  onChange={(e) => setCommentUser(e.target.value)}
+                />
+                <input
+                  id="comment-email"
+                  placeholder="Enter your email"
+                  value={commentEmail}
+                  onChange={(e) => setCommentEmail(e.target.value)}
+                />
+                <textarea
+                  id="comment"
+                  rows="4"
+                  cols="50"
+                  placeholder="Write a comment..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+                <button id="comment-button" onClick={() => handleComment()}>
+                  Comment
+                </button>
+              </div>
+            </div>
             <br />
             <button onClick={() => navigate(-1)}>Back</button>
             <br />

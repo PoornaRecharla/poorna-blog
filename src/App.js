@@ -15,25 +15,25 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 function App() {
   return (
     <Router>
-        <div className="App">
-          <Navbar />
-          {/* <p style={{"height": "60px"}}></p> */}
-          <div className="content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about/" element={<About />} />
-              <Route path="/create" element={<Create />} />
-              <Route path="/post/:postNum" element={<PostDetails />} />
-              <Route path="/posts/" element={<Posts />} />
-              <Route path="/post/edit/:postNum" element={<EditPost />} />
-              <Route path="/tag/:tag" element={<Tag />} />
-              <Route path="/delete/:postNum" element={<Delete />} />
-              <Route path="*" element={<NotFound />} />
-              <Route path="/dummy" element={<Dummy />} />
-            </Routes>
-          </div>
-          <Footer />
+      <div className="App">
+        <Navbar />
+        {/* <p style={{"height": "60px"}}></p> */}
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about/" element={<About />} />
+            <Route path="/create" element={<Create />} />
+            <Route path="/post/:postNum" element={<PostDetails />} />
+            <Route path="/posts/" element={<Posts />} />
+            <Route path="/post/edit/:postNum" element={<EditPost />} />
+            <Route path="/tag/:tag" element={<Tag />} />
+            <Route path="/delete/:postNum" element={<Delete />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/dummy" element={<Dummy />} />
+          </Routes>
         </div>
+        <Footer />
+      </div>
     </Router>
   );
 }

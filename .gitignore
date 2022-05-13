@@ -25,6 +25,8 @@ yarn-error.log*
 # firebase
 .firebaserc
 .firebase/
+.firebase/hosting.YnVpbGQ.cache
+.firebase/hosting.cHVibGlj.cache
 
 # git
 .gitignore
